@@ -45,21 +45,22 @@
            <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="POST" enctype="multipart/form-data">
 
 
-              <img src="uploads/<?php echo $imageId . "." . $imgmodel->getExt() ; ?>" width="100" height="100">
+              <img src="uploads/<?php echo $imageId . "." . $imgmodel->getExt(); ?>" width="100" height="100">
               <br>
-              <input type="file" name="image" value="change Profile image">
+              <label>Chang profile image</label>
+              <input type="file" name="image">
 
               <br>
               
                <label>FullName</label>
-               <input type="text" name="name" value="<?php echo $model->getName(); ?>">
+               <input type="text" name="name" value="<?php echo $usrmodel->getName(); ?>">
                <br>
                <label>Email</label>
-               <input type="email" name="email" value="<?php echo $model->getEmail(); ?>">
+               <input type="email" name="email" value="<?php echo $usrmodel->getEmail(); ?>">
                <br>
                <label>password</label>
-               <input type="hidden" name="oldPass" value="<?php echo $model->getPassword()?>">
-               <input type="password" name="newPass" placeholder="blank means no change" autocomplete="new-password">
+               <input type="hidden" name="oldPass" value="<?php echo $usrmodel->getPassword()?>">
+               <input type="password" name="newPass" placeholder="blank means no change" autocomplete="new-password"> 
                <br>
                <input type="submit" value="Update">
 

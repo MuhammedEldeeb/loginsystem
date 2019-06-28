@@ -32,21 +32,16 @@
 
               //validation
               $formErrors = array();
+            if($image->imageExists() && !($image->isAllowed())){
+                $formErrors[] = "image can't be of this type";
+            }
+            if(empty($name)){
+                $formErrors[] = "FullName can't be empty";
+            }
+            if(empty($email)){
+                $formErrors[] = "Email can't be empty";
+            }
 
-                if($image->imageExists() && !($image->isAllowed())){
-                    $formErrors[] = "image can't be of this type";
-                }
-                if(empty($name)){
-                    $formErrors[] = "FullName can't be empty";
-                }
-                if(empty($email)){
-                    $formErrors[] = "Email can't be empty"; 
-                }
-                
-                // print out the errors 
-                foreach ($formErrors as $error) {
-                    echo $error . "<br>";
-                }
 
                 // update frofile info
                 if(empty($formErrors)){
@@ -54,10 +49,17 @@
                   if($image->imageExists()){ // user uploaded new image
                     $image->upload($imgmodel->getImageId());
                     $ext = $image->getImageActualExt();
+                    echo 'name : ' . $image->getName();
                     $imgmodel->update(1, $ext);
                   }
 
                   $usrmodel->update($id, $name, $email, $pass);
+                }else{
+                    // print out the errors
+                    foreach ($formErrors as $error) {
+                        echo $error . "<br>";
+                    }
+
                 }
 
                   // reload the profile page
@@ -66,7 +68,7 @@
            
            ?>
 
-           <a href="logout.php">logout</a>
+           <a href="logout.php">logout</a> <?php echo " ------  ";?> <a href="deletion.php?action=account">Delete My Account</a>
 
            <h1>Your Profile</h1>
 
@@ -74,7 +76,8 @@
 
 
               <img src="uploads/<?php echo ($imgmodel->getStatus() == 1) ?($imageId . "." . $imgmodel->getExt()) : 'profile.png'; ?>" width="100" height="100">
-              <br>
+              <a href="deletion.php?action=image">delete profile page</a>
+               <br>
               <label>Chang profile image</label>
               <input type="file" name="image">
 

@@ -66,9 +66,9 @@ class UserModel
         $stmt->execute(array($name, $email, $pass, $id));
 
         if($stmt->rowCount() > 0){
-            header('Location:profile.php');
+            return true;
         }else{
-            header('Location:logout.php');
+            return false;
         }
     }
 
@@ -116,6 +116,13 @@ class UserModel
         }else{
             return -1;
         }
+    }
+
+    public function delete($id)
+    {
+        $sql = 'DELETE FROM user WHERE user_id = ?;';
+        $stmt = DB_Connector::connect()->prepare($sql);
+        $stmt->execute(array($id));
     }
 
 }

@@ -25,20 +25,24 @@ class Image{
     public function isAllowed(){
         $allowed = array('jpg', 'jpeg', 'png');
         if(in_array($this->imageActualExt , $allowed)){
-            if($this->error === 0){
-                return "Done";
-            }else{
-                return "there was an error uploading your file!";
-            }
+            return true;
         }else{
-            return "u can't upload file of this type!";
+            return false;
         }
     }
 
-    public function upload(){
-        $newName = "eldeeb." . $this->imageActualExt;
+    public function imageExists(){
+        if($this->error == 4){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public function upload($imgId){
+        $newName = $imgId . "." . $this->imageActualExt;
         $destination = 'uploads/'. $newName;
-        move_uploaded_file($this->tmp_name, $destination);
+        move_uploaded_file($this->tmp_name, $destination);      
     }
 
     public function getName()

@@ -4,11 +4,9 @@
 
 $class 	= 'includes/classes/';
 $temp 	= 'includes/templates/';
-$css 	= 'layouts/css/';
-$js 	= 'layouts/js/';
 
 
-
+// include all required pages 
 include $temp . 'header.inc.php';
 include $class . 'DB_Connector.php';
 include $class . 'MailSender.php';

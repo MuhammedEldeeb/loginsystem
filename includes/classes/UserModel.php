@@ -34,7 +34,21 @@ class UserModel
             $this->name = $row['user_name'];
             $this->password = $row['user_password'];
             $this->email = $row['user_email'];
-            return 1;
+            return true;
+        }
+        return false;
+    }
+
+    public function findID($email)
+    {
+        $sql = 'SELECT user_id FROM user WHERE user_email = ?;';
+
+        $stmt = DB_Connector::connect()->prepare($sql);
+
+        $stmt->execute(array($email));
+        $row = $stmt->fetch();
+        if($stmt->rowCount() > 0){
+            return $row['user_id'];
         }
         return -1;
     }
@@ -62,7 +76,21 @@ class UserModel
 
         if($stmt->rowCount() > 0){
             MailSender::send($email , $name);
-            $image->upload();
+            $userId = $this->findID($email);
+            if($userId != -1){
+               $imgModel = new ImageModel();
+               if($image->imageExists() && $image->isAllowed()){
+                   $imgModel->add($userId, 1);
+                   $imgName = $imgModel->findByUserID($userId);
+                   $image->upload($imgName);
+               }else{
+                   $imgModel->add($userId, 0);
+               }
+
+            }
+            session_start();
+            $_SESSION['userid'] = $userId;
+            
             header('Location:profile.php');
         }else{
             header('Location:registration.php');

@@ -2,14 +2,15 @@
 session_start();
 include 'init.php';
 
-    $controller = new UserController();
+    $model = new UserModel();
 
     if($_SERVER['REQUEST_METHOD'] == "POST"){
 
+        // get info form the form
         $name = $_POST['name'];
         $email = $_POST['email'];
-        $pass = sha1($_POST['pass']);
-
+        $pass = $_POST['pass'];
+        $hashedPass = sha1($_POST['pass']);
 
         /** image info */
         $file = $_FILES['image'];
@@ -21,8 +22,35 @@ include 'init.php';
         $imageType = $file['type'];
 
         $image = new Image($imageName, $imageTmpName, $imageSize, $imageError, $imageType);
-        if($image->isAllowed() === "Done"){
-            $controller->add($name, $email, $pass , $image);
+
+        //validation
+        $formErrors = array();
+
+
+        if($image->imageExists() && !($image->isAllowed())){
+            $formErrors[] = "image can't be of this type";
+        }
+        if(empty($name)){
+            $formErrors[] = "FullName can't be empty";
+        }
+        if(empty($email)){
+            $formErrors[] = "Email can't be empty"; 
+        }
+        if(empty($pass)){
+            $formErrors[] = "Password can't be empty"; 
+        }
+        if(strlen($pass) < 4){
+            $formErrors[] = "Password can't be less than 4 characters ";
+        }
+        
+        // print out the errors 
+        foreach ($formErrors as $error) {
+            echo $error . "<br>";
+        }
+
+        // insert into database
+        if(empty($formErrors)){
+            $model->add($name, $email, $hashedPass , $image);
         }
 
 

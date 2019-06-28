@@ -25,5 +25,6 @@
     <br>
     <input type="submit" value="Login">
 </form>
-
+<br>
+<a href="registration.php">Register</a>
 <?php include $temp . 'footer.inc.php' ?>

@@ -26,17 +26,19 @@ class ImageModel
         return -1;
     }
 
-    public function update($user_id, $status){
-        $sql = 'UPDATE image SET status = ? WHERE user_id = ?;';
-
+    public function update($status = 0, $ext = " "){
+        
+        $this->status = $status;
+        $sql = 'UPDATE image SET status = ? , ext = ? WHERE user_id = ?;';
         $stmt = DB_Connector::connect()->prepare($sql);
-        $stmt->execute(array($status, $user_id));
-
+        $stmt->execute(array($status, $ext, $this->user_id));
+    
         if($stmt->rowCount() > 0){
-            header('Location:profile.php');
+            return true;
         }else{
-            header('Location:logout.php');
+            return false;
         }
+        
     }
 
     public function add($user_id, $status = 0 , $ext = " "){

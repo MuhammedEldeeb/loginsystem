@@ -33,7 +33,35 @@
               //validation
               $formErrors = array();
 
-                $model->update($id, $name, $email, $pass);
+                if($image->imageExists() && !($image->isAllowed())){
+                    $formErrors[] = "image can't be of this type";
+                }
+                if(empty($name)){
+                    $formErrors[] = "FullName can't be empty";
+                }
+                if(empty($email)){
+                    $formErrors[] = "Email can't be empty"; 
+                }
+                
+                // print out the errors 
+                foreach ($formErrors as $error) {
+                    echo $error . "<br>";
+                }
+
+                // update frofile info
+                if(empty($formErrors)){
+                    
+                  if($image->imageExists()){ // user uploaded new image
+                    $image->upload($imgmodel->getImageId());
+                    $ext = $image->getImageActualExt();
+                    $imgmodel->update(1, $ext);
+                  }
+
+                  $usrmodel->update($id, $name, $email, $pass);
+                }
+
+                  // reload the profile page
+                  header('Location:profile.php');
           }else{}
            
            ?>
@@ -45,7 +73,7 @@
            <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="POST" enctype="multipart/form-data">
 
 
-              <img src="uploads/<?php echo $imageId . "." . $imgmodel->getExt(); ?>" width="100" height="100">
+              <img src="uploads/<?php echo ($imgmodel->getStatus() == 1) ?($imageId . "." . $imgmodel->getExt()) : 'profile.png'; ?>" width="100" height="100">
               <br>
               <label>Chang profile image</label>
               <input type="file" name="image">

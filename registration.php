@@ -1,5 +1,6 @@
 <?php
-session_start();
+
+
 include 'init.php';
 
     $model = new UserModel();
@@ -38,9 +39,6 @@ include 'init.php';
         }
         if(empty($pass)){
             $formErrors[] = "Password can't be empty"; 
-        }
-        if(strlen($pass) < 4){
-            $formErrors[] = "Password can't be less than 4 characters ";
         }
         
         // print out the errors 

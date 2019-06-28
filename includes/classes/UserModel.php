@@ -7,11 +7,16 @@ class UserModel
     private $password;
     private $email;
 
+ 
+    public function getId()
+    {
+        return $this->id;
+    }
+
     public function getName()
     {
         return $this->name;
     }
-
     public function getPassword()
     {
         return $this->password;
@@ -31,6 +36,7 @@ class UserModel
         $stmt->execute(array($id));
         $row = $stmt->fetch();
         if($stmt->rowCount() > 0){
+            $this->id = $row['user_id'];
             $this->name = $row['user_name'];
             $this->password = $row['user_password'];
             $this->email = $row['user_email'];
@@ -80,11 +86,11 @@ class UserModel
             if($userId != -1){
                $imgModel = new ImageModel();
                if($image->imageExists() && $image->isAllowed()){
-                   $imgModel->add($userId, 1);
+                   $imgModel->add($userId, 1 , $image->getImageActualExt());
                    $imgName = $imgModel->findByUserID($userId);
                    $image->upload($imgName);
                }else{
-                   $imgModel->add($userId, 0);
+                   $imgModel->add($userId);
                }
 
             }

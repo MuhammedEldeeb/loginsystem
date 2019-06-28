@@ -6,6 +6,7 @@ class ImageModel
     private $image_id;
     private $user_id;
     private $status;
+    private $ext;
 
     public function findByUserID($userId)
     {
@@ -19,6 +20,7 @@ class ImageModel
             $this->image_id = $row['image_id'];
             $this->user_id = $row['user_id'];
             $this->status = $row['status'];
+            $this->ext = $row['ext'];
             return $this->image_id;
         }
         return -1;
@@ -37,12 +39,13 @@ class ImageModel
         }
     }
 
-    public function add($user_id, $status){
-        $sql = 'INSERT INTO image (user_id,status) VALUES (:usr, :st);';
+    public function add($user_id, $status = 0 , $ext = " "){
+        $sql = 'INSERT INTO image (user_id,status,ext) VALUES (:usr, :st, :ex);';
 
         $stmt = DB_Connector::connect()->prepare($sql);
         $stmt->execute(array('usr' => $user_id,
-            'st' =>$status));
+            'st' =>$status,
+            'ex' =>$ext));
 
         if($stmt->rowCount() > 0){
             header('Location:profile.php');
@@ -51,5 +54,17 @@ class ImageModel
         }
     }
 
+    public function getImageId(){
+        return $this->image_id;
+    }
+    public function getUserId(){
+        return $this->user_id;
+    }
+    public function getStatus(){
+        return $this->status;
+    }
+    public function getExt(){
+        return $this->ext;
+    }
 
 }

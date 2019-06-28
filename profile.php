@@ -4,35 +4,49 @@
 
    if(isset($_SESSION['userid'])){
 
-       $model = new UserModel();
+       $usrmodel = new UserModel();
+       $imgmodel = new ImageModel();
 
-       $test = $model->findByID($_SESSION['userid']);
+       $exist = $usrmodel->findByID($_SESSION['userid']);
+       //there exist an account for this user
+       if($exist) {
 
-       if($test == 1) {
+          $imageId = $imgmodel->findByUserID($usrmodel->getId());
 
-           if($_SERVER['REQUEST_METHOD'] == "POST"){
-               $id = $_SESSION['userid'];
-               $name = $_POST['name'];
-               $email = $_POST['email'];
-               $pass = (empty($_POST['newPass']))? $_POST['oldPass'] : sha1($_POST['newPass']);
+         if($_SERVER['REQUEST_METHOD'] == "POST"){
+             $id = $_SESSION['userid'];
+             $name = $_POST['name'];
+             $email = $_POST['email'];
+             $pass = (empty($_POST['newPass']))? $_POST['oldPass'] : sha1($_POST['newPass']);
+
+                 /** image info */
+              $file = $_FILES['image'];
+
+              $imageName = $file['name'];
+              $imageTmpName = $file['tmp_name'];
+              $imageSize = $file['size'];
+              $imageError = $file['error'];
+              $imageType = $file['type'];
+
+              $image = new Image($imageName, $imageTmpName, $imageSize, $imageError, $imageType);
+
+              //validation
+              $formErrors = array();
 
                 $model->update($id, $name, $email, $pass);
-
-           }else{}
-
-
+          }else{}
+           
            ?>
 
            <a href="logout.php">logout</a>
 
            <h1>Your Profile</h1>
 
-           <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="POST">
+           <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="POST" enctype="multipart/form-data">
 
 
-              <img src="uploads/eldeeb.jpg" width="100" height="100">
+              <img src="uploads/<?php echo $imageId . "." . $imgmodel->getExt() ; ?>" width="100" height="100">
               <br>
-
               <input type="file" name="image" value="change Profile image">
 
               <br>
@@ -54,9 +68,7 @@
 
            <?php
 
-       }else{
-
-       }
+       }else{}
    }else{
         header('Location:index.php');
         exit();
